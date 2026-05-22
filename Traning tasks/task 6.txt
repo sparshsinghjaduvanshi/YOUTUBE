@@ -1,0 +1,10 @@
+To create a more inclusive and safe commenting experience,
+ the platform should include a translator option in the comment 
+ section alongside like and dislike functionality. Users should 
+ be able to post comments in any language and have the option to
+  translate comments into their desired language for better understanding. 
+  Each comment should also display the user’s exact city name for context.
+   To maintain a clean environment, comments containing special characters
+    should be automatically blocked, and any comment that receives 2 dislikes 
+    from other users should be automatically removed. This feature ensures accessibility,
+     moderation, and relevance in the comment section.

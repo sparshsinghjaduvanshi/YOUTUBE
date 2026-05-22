@@ -1,0 +1,9 @@
+To deliver a more immersive and intuitive viewing experience,
+ the website should integrate a custom video player with gesture-based controls. 
+ Users should be able to double-tap on the right side of the player to move the
+  playback 10 seconds forward, and double-tap on the left side to move 10 seconds
+   backward. A single tap in the center of the screen should pause or resume playback, 
+   while three taps in the center should automatically skip to the next video. Additionally,
+    three taps on the right side of the screen should close the website, and three taps on
+     the left side should open the comment section. These gesture interactions create a 
+     modern, app-like experience that enhances usability and user engagement.

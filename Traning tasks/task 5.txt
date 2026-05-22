@@ -1,0 +1,14 @@
+To deliver a context-aware and secure user experience, 
+the website should dynamically change its color theme based 
+on the user’s login time and location. If a user accesses 
+the website between 10:00 AM and 12:00 PM IST and their 
+location is within South India (Tamil Nadu, Kerala, Karnataka, 
+Andhra Pradesh, or Telangana), the system should apply a white 
+(light) theme. For all other time ranges or locations outside 
+these states, the website should automatically switch to a dark theme. 
+In addition, authentication should vary by region: if a user logs in
+ from any of the southern states, the system must send an OTP to the
+  user’s registered email address for verification, whereas users logging
+   in from other states should be authenticated using an OTP sent to their
+    registered mobile number.
+ This ensures both personalized theming and region-based secure authentication.

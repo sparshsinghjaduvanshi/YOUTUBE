@@ -1,0 +1,23 @@
+
+To enable real-time communication and collaboration within the platform, 
+the web application should incorporate a VoIP feature that allows users 
+to make video calls with their friends directly from the app. During a call, 
+users should be able to share their screen, specifically allowing screen sharing 
+of a YouTube website for shared viewing or discussion. The system should 
+also provide an option to record the video call session and save the recorded 
+file locally on the user’s device for later access. This feature enhances social
+ interaction by combining video communication, shared media viewing,
+ and session recording in a seamless experience.
+
+
+Instruction:-
+ Build on your training project
+Implement internship tasks as extra features on the same project you completed during training.
+⚠ Submissions on a different/new project will be rejected.
+
+Host and share your live URL
+Deploy your project on Netlify or Vercel and submit the public link.
+(Keep it live until evaluation is completed.)
+
+Make it fully responsive
+Ensure the website works smoothly on all mobile devices and tablets.

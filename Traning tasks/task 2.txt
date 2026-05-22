@@ -1,0 +1,8 @@
+To enhance user convenience and engagement, the platform should provide a video
+ download feature that allows users to download videos directly from the website. 
+ Downloaded videos should be accessible under a “Downloads” section in the user’s profile. 
+ Free users should be allowed to download only one video per day. To download more than one 
+ video per day, users must upgrade to the premium plan by clicking the premium option and 
+ completing a payment via Razorpay (configured for test payments initially). Upon successful
+payment, premium users should be able to download an unlimited number of videos, 
+providing flexibility and incentivizing subscription upgrades.

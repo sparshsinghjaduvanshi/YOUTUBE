@@ -1,0 +1,3 @@
+# Ignore env files
+YOUTUBE/you_tube2.0-main/server/.env
+YOUTUBE/you_tube2.0-main/yourtube/.env.local
