@@ -1,13 +1,70 @@
+import { useEffect } from "react";
+import { useUser } from "@/lib/AuthContext";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { UserProvider } from "../lib/AuthContext";
+
+const ThemeManager = () => {
+
+  const { user } = useUser();
+
+  useEffect(() => {
+
+    const southStates = [
+      "Tamil Nadu",
+      "Kerala",
+      "Karnataka",
+      "Andhra Pradesh",
+      "Telangana",
+    ];
+
+    const hour = Number(
+      new Date().toLocaleString(
+        "en-US",
+        {
+          timeZone:
+            "Asia/Kolkata",
+          hour: "numeric",
+          hour12: false,
+        }
+      )
+    );
+    console.log("User State:", user?.state);
+    console.log("Hour:", hour);
+    const shouldUseLightTheme =
+    user &&
+    southStates.includes(
+      user.state
+    ) &&
+    hour >= 10 &&
+    hour < 10;
+    
+    console.log("Should Use Light:", shouldUseLightTheme);
+    if (
+      shouldUseLightTheme
+    ) {
+      document.documentElement.classList.remove(
+        "dark"
+      );
+    } else {
+      document.documentElement.classList.add(
+        "dark"
+      );
+    }
+  }, [user]);
+  return null;
+};
+
 export default function App({ Component, pageProps }: AppProps) {
+
+
   return (
     <UserProvider>
-      <div className="min-h-screen bg-white text-black">
+      <ThemeManager />
+      <div className="min-h-screen">
         <title>Your-Tube Clone</title>
         <Header />
         <Toaster />

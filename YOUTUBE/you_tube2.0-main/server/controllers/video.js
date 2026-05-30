@@ -3,7 +3,7 @@ import video from "../Modals/video.js";
 export const uploadvideo = async (req, res) => {
   if (req.file === undefined) {
     return res
-      .status(404)
+      .status(400)
       .json({ message: "plz upload a mp4 video file only" });
   } else {
     try {

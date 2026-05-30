@@ -22,8 +22,8 @@ const VideoUploader = ({ channelId, channelName }: any) => {
         toast.error("Please upload a valid video file.");
         return;
       }
-      if (file.size > 100 * 1024 * 1024) {
-        toast.error("File size exceeds 100MB limit.");
+      if (file.size > 5 * 1024 * 1024 * 1024) {
+        toast.error("File size exceeds 5GB limit.");
         return;
       }
       setVideoFile(file);
@@ -62,22 +62,38 @@ const VideoUploader = ({ channelId, channelName }: any) => {
     try {
       setIsUploading(true);
       setUploadProgress(0);
-      const res = await axiosInstance.post("/video/upload", formdata, {
-         headers: {
-    "Content-Type": "multipart/form-data", // ✅ MUST for FormData
-  },
-        onUploadProgress: (progresEvent: any) => {
-          const progress = Math.round(
-            (progresEvent.loaded * 100) / progresEvent.total
-          );
-          setUploadProgress(progress);
-        },
-      });
+      const res = await axiosInstance.post(
+        "/video/upload",
+
+        formdata,
+
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+
+          timeout: 0,
+
+          onUploadProgress: (
+            progresEvent: any
+          ) => {
+
+            const progress =
+              Math.round(
+                (progresEvent.loaded * 100)
+                / progresEvent.total
+              );
+
+            setUploadProgress(progress);
+          },
+        }
+      );
       toast.success("Upload successfully");
       resetForm();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error uploading video:", error);
-      toast.error("There was an error uploading your video. Please try again.");
+      toast.error(error?.response?.data?.message || "Upload failed");
     } finally {
       setIsUploading(false);
     }
@@ -100,7 +116,7 @@ const VideoUploader = ({ channelId, channelName }: any) => {
               or click to select files
             </p>
             <p className="text-xs text-gray-400 mt-4">
-              MP4, WebM, MOV or AVI • Up to 100MB
+              MP4, WebM, MOV or AVI • Up to 5GB
             </p>
             <input
               type="file"
