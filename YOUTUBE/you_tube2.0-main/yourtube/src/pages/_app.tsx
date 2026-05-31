@@ -32,17 +32,15 @@ const ThemeManager = () => {
         }
       )
     );
-    console.log("User State:", user?.state);
-    console.log("Hour:", hour);
+   
     const shouldUseLightTheme =
     user &&
     southStates.includes(
       user.state
     ) &&
     hour >= 10 &&
-    hour < 10;
+    hour < 12;
     
-    console.log("Should Use Light:", shouldUseLightTheme);
     if (
       shouldUseLightTheme
     ) {
