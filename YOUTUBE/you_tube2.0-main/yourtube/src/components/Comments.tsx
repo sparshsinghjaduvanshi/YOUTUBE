@@ -11,6 +11,9 @@ interface Comment {
   userid: string;
   commentbody: string;
   usercommented: string;
+  city: string;
+  likes: number;
+  dislikes: number;
   commentedon: string;
 }
 const Comments = ({ videoId }: any) => {
@@ -18,27 +21,29 @@ const Comments = ({ videoId }: any) => {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [translatedComments, setTranslatedComments] = useState<Record<string, string>>({});
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [editText, setEditText] = useState("");
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
-  const fetchedComments = [
-    {
-      _id: "1",
-      videoid: videoId,
-      userid: "1",
-      commentbody: "Great video! Really enjoyed watching this.",
-      usercommented: "John Doe",
-      commentedon: new Date(Date.now() - 3600000).toISOString(),
-    },
-    {
-      _id: "2",
-      videoid: videoId,
-      userid: "2",
-      commentbody: "Thanks for sharing this amazing content!",
-      usercommented: "Jane Smith",
-      commentedon: new Date(Date.now() - 7200000).toISOString(),
-    },
-  ];
+  // const fetchedComments = [
+  //   {
+  //     _id: "1",
+  //     videoid: videoId,
+  //     userid: "1",
+  //     commentbody: "Great video! Really enjoyed watching this.",
+  //     usercommented: "John Doe",
+  //     commentedon: new Date(Date.now() - 3600000).toISOString(),
+  //   },
+  //   {
+  //     _id: "2",
+  //     videoid: videoId,
+  //     userid: "2",
+  //     commentbody: "Thanks for sharing this amazing content!",
+  //     usercommented: "Jane Smith",
+  //     commentedon: new Date(Date.now() - 7200000).toISOString(),
+  //   },
+  // ];
   useEffect(() => {
     loadComments();
   }, [videoId]);
@@ -61,26 +66,46 @@ const Comments = ({ videoId }: any) => {
 
     setIsSubmitting(true);
     try {
-      const res = await axiosInstance.post("/comment/postcomment", {
-        videoid: videoId,
-        userid: user._id,
-        commentbody: newComment,
-        usercommented: user.name,
-      });
-      if (res.data.comment) {
-        const newCommentObj: Comment = {
-          _id: Date.now().toString(),
+      const res = await axiosInstance.post(
+        "/comment/postcomment",
+        {
           videoid: videoId,
           userid: user._id,
           commentbody: newComment,
-          usercommented: user.name || "Anonymous",
-          commentedon: new Date().toISOString(),
-        };
-        setComments([newCommentObj, ...comments]);
+          usercommented: user.name,
+          city: user.city,
+        }
+      );
+      // if (res.data.comment) {
+      //   const newCommentObj: Comment = {
+      //     _id: Date.now().toString(),
+      //     videoid: videoId,
+      //     userid: user._id,
+      //     commentbody: newComment,
+      //     usercommented: user.name || "Anonymous",
+      //     city: user.city || "",
+      //     likes: 0,
+      //     dislikes: 0,
+      //     commentedon: new Date().toISOString(),
+      //   };
+      //   setComments([newCommentObj, ...comments]);
+      // }
+
+      if (res.data.comment) {
+
+        setComments(prev => [
+          res.data.comment,
+          ...prev,
+        ]);
       }
       setNewComment("");
-    } catch (error) {
-      console.error("Error adding comment:", error);
+    }
+    catch (error: any) {
+
+      alert(
+        error?.response?.data?.message
+        || "Failed to add comment"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -122,13 +147,97 @@ const Comments = ({ videoId }: any) => {
       console.log(error);
     }
   };
+
+  const handleLike = async (commentId: string) => {
+    try {
+      const res =
+        await axiosInstance.post(
+          `/comment/like/${commentId}`,
+          {
+            userId: user._id,
+          }
+        );
+      setComments(
+        prev =>
+          prev.map(c => c._id === commentId ? { ...c, likes: res.data.likes, } : c
+          )
+      );
+
+    } catch (error: any) {
+
+      alert(
+        error?.response?.data?.message
+        || "Action failed"
+      );
+    }
+  };
+
+  const handleDislike = async (commentId: string) => {
+    try {
+      const res = await axiosInstance.post(
+        `/comment/dislike/${commentId}`,
+        {
+          userId: user._id,
+        }
+      );
+      if (res.data.deleted) {
+
+        setComments(prev => prev.filter(c => c._id !== commentId));
+        return;
+      }
+
+      setComments(prev =>
+        prev.map(c => c._id === commentId ? { ...c, dislikes: res.data.dislikes, } : c
+        )
+      );
+
+    } catch (error: any) {
+
+      alert(
+        error?.response?.data?.message
+        || "Action failed"
+      );
+    }
+  };
+
+  const handleTranslate = async (commentId: string, text: string) => {
+
+    try {
+      console.log("Translate clicked");
+      const res = await axiosInstance.post(
+        "/comment/translate",
+        {
+          text,
+          targetLanguage: selectedLanguage,
+        }
+      );
+
+      console.log("Translation Response:", res.data);
+
+      setTranslatedComments(
+        prev => ({
+          ...prev,
+          [commentId]:
+            res.data.translatedText,
+        })
+      );
+
+    } catch (error) {
+      console.log(error);
+      alert(
+        "Translation failed"
+      );
+    }
+  };
+
+
   return (
     <div id="comments-section">
       <div className="space-y-6">
         <h2 className="text-xl font-semibold">{comments.length} Comments</h2>
 
         {user && (
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Avatar className="w-10 h-10">
               <AvatarImage src={user.image || ""} />
               <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
@@ -175,6 +284,10 @@ const Comments = ({ videoId }: any) => {
                     <span className="font-medium text-sm">
                       {comment.usercommented}
                     </span>
+
+                    <span className="text-xs text-muted-foreground">
+                      • {comment.city}
+                    </span>
                     <span className="text-xs text-gray-600">
                       {formatDistanceToNow(new Date(comment.commentedon))} ago
                     </span>
@@ -207,6 +320,85 @@ const Comments = ({ videoId }: any) => {
                   ) : (
                     <>
                       <p className="text-sm">{comment.commentbody}</p>
+
+                      <div className="flex flex-wrap gap-4 mt-2">
+
+                        <button
+                          onClick={() =>
+                            handleLike(comment._id)
+                          }
+                        >
+                          👍 {comment.likes}
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            handleDislike(comment._id)
+                          }
+                        >
+                          👎 {comment.dislikes}
+                        </button>
+
+                      </div>
+
+                      <div className="mt-2">
+
+                        <select
+                          value={selectedLanguage}
+                          onChange={(e) =>
+                            setSelectedLanguage(
+                              e.target.value
+                            )
+                          }
+                          className=" border rounded px-2 py-1 text-sm bg-background text-foreground border-border " >
+                          <option value="en" className=" bg-background text-foreground" >
+                            English
+                          </option>
+
+                          <option value="hi" className="bg-background text-foreground">
+                            Hindi
+                          </option>
+
+                          <option value="fr" className="bg-background text-foreground">
+                            French
+                          </option>
+
+                          <option value="es" className="bg-background text-foreground">
+                            Spanish
+                          </option>
+
+                          <option value="de" className="bg-background text-foreground">
+                            German
+                          </option>
+                        </select>
+
+                        <button
+                          className="ml-2 text-blue-500"
+                          onClick={() =>
+                            handleTranslate(
+                              comment._id,
+                              comment.commentbody
+                            )
+                          }
+                        >
+                          Translate
+                        </button>
+
+                      </div>
+
+                      {translatedComments[
+                        comment._id
+                      ] && (
+
+                          <div className=" mt-2 text-sm italic text-muted-foreground " >
+                            Translated:{" "}
+                            {
+                              translatedComments[
+                              comment._id
+                              ]
+                            }
+                          </div>
+                        )}
                       {comment.userid === user?._id && (
                         <div className="flex gap-2 mt-2 text-sm text-gray-500">
                           <button onClick={() => handleEdit(comment)}>

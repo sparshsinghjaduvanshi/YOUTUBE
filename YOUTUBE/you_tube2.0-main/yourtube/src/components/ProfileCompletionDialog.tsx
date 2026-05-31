@@ -27,6 +27,7 @@ export default function ProfileCompletionDialog({ open, onComplete, onCancel }: 
     const { user, login } = useUser();
     const [phone, setPhone] = useState("");
     const [state, setState] = useState("");
+    const [city, setCity] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -47,7 +48,7 @@ export default function ProfileCompletionDialog({ open, onComplete, onCancel }: 
 
     const handleSave = async () => {
 
-        if (!phone || !state) {
+        if (!phone || !state || !city) {
             alert("Please fill all fields");
             return;
         }
@@ -59,6 +60,7 @@ export default function ProfileCompletionDialog({ open, onComplete, onCancel }: 
                     {
                         phone,
                         state,
+                        city
                     }
                 );
 
@@ -128,6 +130,18 @@ export default function ProfileCompletionDialog({ open, onComplete, onCancel }: 
                                 setPhone(
                                     e.target.value
                                 )
+                            }
+                        />
+                    </div>
+                    <div>
+                        <Label>
+                            City
+                        </Label>
+
+                        <Input
+                            value={city}
+                            onChange={(e) =>
+                                setCity(e.target.value)
                             }
                         />
                     </div>

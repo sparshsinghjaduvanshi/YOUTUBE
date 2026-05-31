@@ -80,9 +80,18 @@ const SearchResult = ({ query }: any) => {
       {video.length > 0 && (
         <div className="space-y-4">
           {video.map((video: any) => (
-            <div key={video._id} className="flex gap-4 group">
+            <div
+  key={video._id}
+  className="
+    flex
+    flex-col
+    sm:flex-row
+    gap-4
+    group
+  "
+>
               <Link href={`/watch/${video._id}`} className="flex-shrink-0">
-                <div className="relative w-80 aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                <div className="relative w-full sm:w-80 aspect-video bg-gray-100 rounded-lg overflow-hidden">
                   <video
                     src={vids}
                     className="object-cover group-hover:scale-105 transition-transform duration-200"

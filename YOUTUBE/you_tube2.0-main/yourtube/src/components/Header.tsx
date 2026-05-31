@@ -118,7 +118,7 @@ const Header = () => {
 
   return (
     // <header className="flex items-center justify-between px-4 py-2 bg-white border-b">
-    <header className="flex items-center justify-between px-4 py-2 border-b">
+    <header className="flex flex-wrap items-center justify-between px-2 sm:px-4 py-2 border-b gap-2">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon">
           <Menu className="w-6 h-6" />
@@ -130,7 +130,9 @@ const Header = () => {
             </svg>
           </div>
           <span className="text-xl font-medium">YourTube</span>
-          <span className="text-xs text-gray-400 ml-1">IN</span>
+          <span className="hidden sm:block text-xs text-gray-400 ml-1">
+            IN
+          </span>
         </Link>
       </div>
       <form
@@ -153,7 +155,11 @@ const Header = () => {
             <Search className="w-5 h-5" />
           </Button>
         </div>
-        <Button variant="ghost" size="icon" className="rounded-full">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hidden sm:flex rounded-full"
+        >
           <Mic className="w-5 h-5" />
         </Button>
       </form>
@@ -170,8 +176,8 @@ const Header = () => {
             <Button variant="ghost" size="icon">
               <Bell className="w-6 h-6" />
             </Button>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600 text-white"
+              <Button
+  className="hidden md:flex bg-yellow-500 hover:bg-yellow-600 text-white"
               onClick={() => setOpenPlanModal(true)}
             >
               Upgrade Plan

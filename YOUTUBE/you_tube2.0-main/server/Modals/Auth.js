@@ -39,6 +39,10 @@ const userschema = mongoose.Schema({
     type: String,
     default: "",
   },
+  city: {
+    type: String,
+    default: "",
+  },
 
   otp: {
     type: String,

@@ -1,17 +1,43 @@
 import comment from "../Modals/comment.js";
 import mongoose from "mongoose";
+import translate from "translate-google";
+
 
 export const postcomment = async (req, res) => {
+  const { commentbody } = req.body;
+
+  const validCommentRegex =
+    /^[a-zA-Z0-9\s.,!?]+$/;
+
+  if (
+    !validCommentRegex.test(
+      commentbody
+    )
+  ) {
+
+    return res.status(400)
+      .json({
+        message:
+          "Special characters are not allowed",
+      });
+  }
   const commentdata = req.body;
-  const postcomment = new comment(commentdata);
+  const postcomment =
+    new comment(commentdata);
   try {
-    await postcomment.save();
-    return res.status(200).json({ comment: true });
+    const savedComment =
+      await postcomment.save();
+    res.status(200).json({
+      comment: savedComment,
+    });
   } catch (error) {
-    console.error(" error:", error);
-    return res.status(500).json({ message: "Something went wrong" });
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong",
+    });
   }
 };
+
 export const getallcomment = async (req, res) => {
   const { videoid } = req.params;
   try {
@@ -50,5 +76,149 @@ export const editcomment = async (req, res) => {
   } catch (error) {
     console.error(" error:", error);
     return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const likeComment = async (req, res) => {
+  try {
+
+    const commentDoc =
+      await comment.findById(
+        req.params.id
+      );
+
+    if (!commentDoc) {
+
+      return res.status(404)
+        .json({
+          message:
+            "Comment not found",
+        });
+    }
+
+    const { userId } = req.body;
+
+    if (
+      commentDoc.likedBy.includes(
+        userId
+      )
+    ) {
+      return res.status(400).json({
+        message: "Already liked",
+      });
+    }
+
+    commentDoc.likedBy.push(
+      userId
+    );
+    commentDoc.likes += 1;
+
+    await commentDoc.save();
+
+    return res.status(200)
+      .json(commentDoc);
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500)
+      .json({
+        message:
+          "Something went wrong",
+      });
+  }
+};
+
+export const dislikeComment = async (req, res) => {
+
+  try {
+
+    const commentDoc =
+      await comment.findById(
+        req.params.id
+      );
+
+    if (!commentDoc) {
+
+      return res.status(404)
+        .json({
+          message:
+            "Comment not found",
+        });
+    }
+
+    const { userId } = req.body;
+
+    if (
+      commentDoc.dislikedBy.includes(
+        userId
+      )
+    ) {
+      return res.status(400).json({
+        message: "Already disliked",
+      });
+    }
+
+    commentDoc.dislikedBy.push(
+      userId
+    );
+    commentDoc.dislikes += 1;
+
+    if (
+      commentDoc.dislikes >= 2
+    ) {
+
+      await comment.findByIdAndDelete(
+        commentDoc._id
+      );
+
+      return res.status(200)
+        .json({
+          deleted: true,
+        });
+    }
+
+    await commentDoc.save();
+
+    return res.status(200)
+      .json(commentDoc);
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500)
+      .json({
+        message:
+          "Something went wrong",
+      });
+  }
+};
+
+export const translateComment = async (req, res) => {
+  try {
+
+    const { text, targetLanguage } = req.body;
+
+    const translatedText =
+      await translate(
+        text,
+        {
+          to: targetLanguage,
+        }
+      );
+
+    return res.status(200).json({
+      translatedText,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Translation failed",
+    });
   }
 };
