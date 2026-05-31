@@ -1,9 +1,0 @@
-To offer tiered access and encourage premium engagement, the platform should
- introduce a plan upgrade feature that allows users to move from the Free plan 
- to Bronze, Silver, or Gold. Users on the Free plan should be limited to watching
-  videos for 5 minutes, while the Bronze plan (₹10) allows 7 minutes, the Silver 
-  plan (₹50) allows 10 minutes, and the Gold plan (₹100) provides unlimited video 
-  watching time. Once a user successfully completes the payment for any upgrade,
-   the system must trigger an email notification containing the invoice and plan 
-   details, ensuring transparency and confirmation of the transaction. This feature creates a
- clear value ladder while providing users with flexible viewing options.
